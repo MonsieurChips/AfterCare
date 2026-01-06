@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
 import CheckInScreen from './screens/CheckInScreen';
 import InsightsScreen from './screens/InsightsScreen';
@@ -64,6 +65,9 @@ export default function App() {
             component={HomeScreen}
             options={{
               tabBarLabel: 'Home',
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="home" size={size} color={color} />
+              ),
             }}
           />
           <Tab.Screen 
@@ -71,6 +75,9 @@ export default function App() {
             component={CheckInScreen}
             options={{
               tabBarLabel: 'Check-In',
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="checkmark-circle" size={size} color={color} />
+              ),
             }}
           />
           <Tab.Screen 
@@ -78,6 +85,9 @@ export default function App() {
             component={EventsScreen}
             options={{
               tabBarLabel: 'Events',
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="calendar" size={size} color={color} />
+              ),
             }}
           />
           <Tab.Screen 
@@ -85,6 +95,9 @@ export default function App() {
             component={InsightsScreen}
             options={{
               tabBarLabel: 'Insights',
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="analytics" size={size} color={color} />
+              ),
             }}
           />
         </Tab.Navigator>

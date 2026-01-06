@@ -3,7 +3,7 @@
  * These functions help manage user records in the database
  */
 
-import { supabase, signInAnonymously, getCurrentUser } from './supabase';
+import { getSupabase, signInAnonymously, getCurrentUser } from './supabase';
 import type { User, UserInsert } from '../types/supabase';
 
 /**
@@ -33,6 +33,11 @@ export const initializeUser = async (): Promise<{ data: User | null; error: any 
     }
 
     // Check if user record already exists
+    const supabase = getSupabase();
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase is not configured') };
+    }
+    
     const { data: existingUser, error: fetchError } = await supabase
       .from('users')
       .select('*')
@@ -78,6 +83,11 @@ export const getUserRecord = async (): Promise<{ data: User | null; error: any }
       return { data: null, error: authError || new Error('User not authenticated') };
     }
 
+    const supabase = getSupabase();
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase is not configured') };
+    }
+    
     const { data: user, error } = await supabase
       .from('users')
       .select('*')

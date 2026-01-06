@@ -3,7 +3,7 @@
  * These functions provide convenient wrappers around Supabase queries
  */
 
-import { supabase } from './supabase';
+import { getSupabase, isSupabaseConfigured } from './supabase';
 import type {
   Event,
   EventInsert,
@@ -17,10 +17,20 @@ import type {
   Importance,
 } from '../types/supabase';
 
+// Helper to get Supabase client with error handling
+const getSupabaseClient = () => {
+  const client = getSupabase();
+  if (!client) {
+    throw new Error('Supabase is not configured. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.');
+  }
+  return client;
+};
+
 // ==================== Events ====================
 
 export const createEvent = async (event: EventInsert): Promise<{ data: Event | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('events')
       .insert(event)
@@ -41,6 +51,7 @@ export const createEvent = async (event: EventInsert): Promise<{ data: Event | n
 
 export const getEvents = async (limit?: number): Promise<{ data: Event[] | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     let query = supabase
       .from('events')
       .select('*')
@@ -69,6 +80,7 @@ export const updateEvent = async (
   updates: EventUpdate
 ): Promise<{ data: Event | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('events')
       .update(updates)
@@ -90,6 +102,7 @@ export const updateEvent = async (
 
 export const deleteEvent = async (id: string): Promise<{ error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { error } = await supabase.from('events').delete().eq('id', id);
 
     if (error) {
@@ -110,6 +123,7 @@ export const createCheckIn = async (
   checkIn: CheckInInsert
 ): Promise<{ data: CheckIn | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('check_ins')
       .insert(checkIn)
@@ -130,6 +144,7 @@ export const createCheckIn = async (
 
 export const getCheckIns = async (limit?: number): Promise<{ data: CheckIn[] | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     let query = supabase
       .from('check_ins')
       .select('*')
@@ -158,6 +173,7 @@ export const updateCheckIn = async (
   updates: CheckInUpdate
 ): Promise<{ data: CheckIn | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('check_ins')
       .update(updates)
@@ -179,6 +195,7 @@ export const updateCheckIn = async (
 
 export const deleteCheckIn = async (id: string): Promise<{ error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { error } = await supabase.from('check_ins').delete().eq('id', id);
 
     if (error) {
@@ -199,6 +216,7 @@ export const createReflection = async (
   reflection: ReflectionInsert
 ): Promise<{ data: Reflection | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('reflections')
       .insert(reflection)
@@ -221,6 +239,7 @@ export const getReflections = async (
   limit?: number
 ): Promise<{ data: Reflection[] | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     let query = supabase
       .from('reflections')
       .select('*')
@@ -249,6 +268,7 @@ export const updateReflection = async (
   updates: ReflectionUpdate
 ): Promise<{ data: Reflection | null; error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('reflections')
       .update(updates)
@@ -270,6 +290,7 @@ export const updateReflection = async (
 
 export const deleteReflection = async (id: string): Promise<{ error: any }> => {
   try {
+    const supabase = getSupabaseClient();
     const { error } = await supabase.from('reflections').delete().eq('id', id);
 
     if (error) {

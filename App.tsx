@@ -8,6 +8,7 @@ import CheckInScreen from './screens/CheckInScreen';
 import InsightsScreen from './screens/InsightsScreen';
 import EventsScreen from './screens/EventsScreen';
 import { initializeUser } from './lib/user-helpers';
+import { isSupabaseConfigured } from './lib/supabase';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,11 +16,22 @@ export default function App() {
   // Initialize user on app start (silently, don't block UI)
   useEffect(() => {
     const initUser = async () => {
+      // Only try to initialize if Supabase is configured
+      if (!isSupabaseConfigured()) {
+        return; // Silently skip if not configured
+      }
+      
       try {
-        await initializeUser();
-      } catch (error) {
+        const { error } = await initializeUser();
+        // Errors are handled silently in initializeUser
+        if (error && !error.message?.includes('not configured')) {
+          console.log('User initialization completed with note:', error.message);
+        }
+      } catch (error: any) {
         // Silently handle errors - don't break the app if Supabase isn't configured
-        console.log('User initialization skipped:', error);
+        if (!error?.message?.includes('not configured')) {
+          console.log('User initialization skipped:', error?.message || 'Unknown error');
+        }
       }
     };
     initUser();

@@ -58,6 +58,7 @@ export const signInAnonymously = async () => {
   try {
     const client = getSupabaseClient();
     if (!client) {
+      // Return error silently - don't log as error since this is expected when not configured
       return { 
         data: null, 
         error: { message: 'Supabase is not configured. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.' } 
@@ -67,13 +68,18 @@ export const signInAnonymously = async () => {
     const { data, error } = await client.auth.signInAnonymously();
     
     if (error) {
-      console.error('Error signing in anonymously:', error);
+      // Only log unexpected errors
+      console.log('Error signing in anonymously:', error.message);
       throw error;
     }
     
     return { data, error: null };
   } catch (error: any) {
-    console.error('Failed to sign in anonymously:', error);
+    // Don't log configuration errors as errors
+    if (error?.message?.includes('not configured')) {
+      return { data: null, error };
+    }
+    console.log('Failed to sign in anonymously:', error?.message || 'Unknown error');
     return { data: null, error: error || { message: 'Failed to sign in anonymously' } };
   }
 };
